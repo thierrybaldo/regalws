@@ -8,7 +8,7 @@
 #include <netdb.h>
 #include <netinet/in.h>
 
-static int send_request(const char *path)
+static int send_request(int port, const char *path)
 {
 	int ret = -1;
 	int sockfd;
@@ -27,7 +27,7 @@ static int send_request(const char *path)
 
 	server_addr.sin_family = AF_INET;
 	memcpy(&server_addr.sin_addr.s_addr, server->h_addr, server->h_length);
-	server_addr.sin_port = htons(12345);
+	server_addr.sin_port = htons(port);
 
 	res = connect(sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr));
 	assert(res == 0);
@@ -58,22 +58,29 @@ static int send_request(const char *path)
 	return ret;
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
 	int ret = EXIT_FAILURE;
+	int port;
 
-	send_request("/date");
-	send_request("/status");
-	send_request("/status?field_a=1");
-	send_request("/question");
-	send_request("/response?happy=1&hungry=0");
-	send_request("/response");
-	send_request("/response?happy=1&hungry=1");
-	send_request("/response?happy=1&hungry=1&happy=0");
-	send_request("/notfound");
-	send_request("/quit");
+	if (argc < 2) {
+		goto out;
+	}
+	port = atoi(argv[1]);
+
+	send_request(port, "/date");
+	send_request(port, "/status");
+	send_request(port, "/status?field_a=1");
+	send_request(port, "/question");
+	send_request(port, "/response?happy=1&hungry=0");
+	send_request(port, "/response");
+	send_request(port, "/response?happy=1&hungry=1");
+	send_request(port, "/response?happy=1&hungry=1&happy=0");
+	send_request(port, "/notfound");
+	send_request(port, "/quit");
 
 	ret = 0;
-	
+
+out:
 	return ret;
 }
