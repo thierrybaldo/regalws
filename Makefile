@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -Wall -O0 -g
+CFLAGS := -Wall -O0 -g -Iinclude
 
 EXE0 := exe/regalws
 EXE1 := exe/regalws_client_sample
@@ -20,13 +20,15 @@ $(EXE1): $(OBJ1)
 	@mkdir -p exe
 	$(CC) $(CFLAGS) -o $@ $(OBJ1) -lhttp_parser
 
-obj/%.o: %.c
+obj/%.o: src/%.c
 	@mkdir -p obj
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
 	rm -f $(EXE0) $(OBJ0)
 	rm -f $(EXE1) $(OBJ1)
+	rmdir obj
+	rmdir exe
 
 run: all
 	./$(EXE0) 13111
