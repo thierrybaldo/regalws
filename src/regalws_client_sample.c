@@ -15,7 +15,7 @@ static int send_request(int port, const char *path)
 	struct sockaddr_in server_addr;
 	struct hostent *server;
 	int res;
-	FILE *fhd;
+	FILE *fhd = NULL;
 	char buffer_date[2048];
 	ssize_t nb;
 
@@ -49,6 +49,8 @@ static int send_request(int port, const char *path)
 		buffer_date[nb] = 0;
 		printf("%s", buffer_date);
 	}
+
+	fclose(fhd);
 
 	close(sockfd);
 	ret = 0;
